@@ -1,6 +1,13 @@
-.container{
+.container {
   padding-top: 1rem;
 }
-.error span{
+.error span {
   font-size: 0.8rem;
+}
+.mainEmoji {
+  font-size: 8rem;
+}
+.hrefTag {
+  color: #4183c4;
+  cursor: pointer;
 }

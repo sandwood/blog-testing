@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Form, Button } from "semantic-ui-react";
 import isEmail from "validator/lib/isEmail";
-import { connect } from "react-redux";
-import { login } from "../../actions/auth";
 import InlineError from "../messages/InlineError";
+import { signup } from "../../actions/auth";
 
 class SignupForm extends React.Component {
   state = {
@@ -29,7 +29,8 @@ class SignupForm extends React.Component {
     if (Object.keys(errors).length === 0) {
       this.setState({ loading: true });
       this.props
-        .login(this.state.data)
+        .signup(this.state.data)
+        .then(() => this.props.history.push("/"))
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
         );
@@ -46,6 +47,7 @@ class SignupForm extends React.Component {
 
   render() {
     const { data, errors, loading } = this.state;
+
     return (
       <Form onSubmit={this.onSubmit} loading={loading}>
         <Form.Field error={!!errors.email}>
@@ -69,7 +71,8 @@ class SignupForm extends React.Component {
             value={data.password}
             onChange={this.onChange}
           />
-          {errors.password && <InlineError test={errors.password} />}
+          <span style={{ fontSize: 12 }}>신중하게 기재해주세요</span>
+          {errors.password && <InlineError text={errors.password} />}
         </Form.Field>
         <Button primary>가입하기</Button>
       </Form>
@@ -78,7 +81,10 @@ class SignupForm extends React.Component {
 }
 
 SignupForm.propTypes = {
-  login: PropTypes.func.isRequired
+  signup: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired,
 };
 
-export default connect(null, { login })(SignupForm);
+export default connect(null, { signup })(SignupForm);

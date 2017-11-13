@@ -11,7 +11,7 @@ export const userLoggedOut = () => ({
   type: USER_LOGGED_OUT
 });
 
-export const login = credentials => dispatch => 
+export const login = credentials => dispatch =>
   api.user.login(credentials).then(user => {
     localStorage.sandwBlogJWT = user.token;
     setAuthorizationHeader(user.token);
@@ -23,3 +23,22 @@ export const logout = () => dispatch => {
   setAuthorizationHeader();
   dispatch(userLoggedOut());
 };
+
+export const signup = data => dispatch =>
+  api.user.signup(data).then(user => {
+    localStorage.sandwBlogJWT = user.token;
+    dispatch(userLoggedIn(user));
+  });
+
+export const confirm = token => dispatch =>
+  api.user.confirm(token).then(user => {
+    localStorage.sandwBlogJWT = user.token;
+    dispatch(userLoggedIn(user));
+  });
+
+export const resetPasswordRequest = ({ email }) => () =>
+  api.user.resetPasswordRequest(email);
+
+export const validateToken = token => () => api.user.validateToken(token);
+
+export const resetPassword = data => () => api.user.resetPassword(data);

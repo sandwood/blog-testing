@@ -72,8 +72,7 @@ class LoginForm extends React.Component {
           {errors.password && <InlineError text={errors.password} />}
         </Form.Field>
         <Form.Field>
-          <Button type="submit">로그인</Button>
-          <Button>회원가입</Button>
+          <Button type="submit" primary>로그인</Button>
         </Form.Field>
         {errors.global && <InlineError text={errors.global} />}
       </Form>
