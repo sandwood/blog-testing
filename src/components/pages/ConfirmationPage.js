@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Message, Icon, Grid } from "semantic-ui-react";
+import { Container, Message, Icon, Grid } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { confirm } from "../../actions/auth";
@@ -22,7 +22,7 @@ class ConfirmationPage extends React.Component {
     const { loading, success } = this.state;
 
     return (
-      <div>
+      <Container>
         <Grid verticalAlign="middle" columns={3} centered>
           <Grid.Row>
             <Grid.Column>{" "}</Grid.Column>
@@ -58,7 +58,7 @@ class ConfirmationPage extends React.Component {
             <Grid.Column>{" "}</Grid.Column>
           </Grid.Row>
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

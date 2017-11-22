@@ -1,101 +1,19 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Modal, Button, Segment, Grid, Divider } from "semantic-ui-react";
-import * as actions from "../../actions/auth";
-import LoginForm from "./LoginForm";
-import SignupForm from "./SignupForm";
-import ForgotPasswordForm from "./ForgotPasswordForm";
-import ConfirmEmailMessage from "../messages/ConfirmEmailMessage";
 
-// import sideImage from '../../img/sa.png';
-// <Image src={sideImage} size="large" centered circular/>
-import "./css/main.css";
+class HomePage extends React.Component {
+  state = {};
 
-const HomePage = ({ isConfirmed, isAuthenticated, logout, user }) => (
-  <div>
-    <h2>홈페이지</h2>
-    <Grid verticalAlign="middle" stackable columns={2}>
-      <Grid.Column>
-        <span className="mainEmoji" role="img" aria-label="Woman Astronaut">
-          👩🏻‍🚀
-        </span>
-      </Grid.Column>
-      {isAuthenticated ? (
-        <Grid.Column>
-          <Segment>
-            {user.email && <div>반갑습니다 {user.email}</div>}
-            <br />
-            <Button onClick={() => logout()}>로그아웃</Button>
-          </Segment>
-          <Segment>
-            {!isConfirmed ? <ConfirmEmailMessage /> : <span>블로그 들어가기</span>}
-          </Segment>
-        </Grid.Column>
-      ) : (
-        <Grid.Column>
-          <Segment textAlign="center">
-            {!user.email && <div>로그인을 해주세요</div>}
-            <br />
-            <Modal
-              dimmer="blurring"
-              size={"mini"}
-              trigger={<Button color="blue">로그인</Button>}
-            >
-              <Modal.Content>
-                <h3>계정 로그인</h3>
-                <LoginForm />
-              </Modal.Content>
-            </Modal>
-            <br />
-            <Divider horizontal>또는</Divider>
-            <Modal
-              dimmer="blurring"
-              size={"mini"}
-              trigger={<span className="hrefTag">비밀번호를 잊으셨나요?</span>}
-            >
-              <Modal.Content>
-                <h3>비밀번호 찾기</h3>
-                <ForgotPasswordForm />
-              </Modal.Content>
-            </Modal>
-          </Segment>
-          <Segment textAlign="center">
-            계정이 없으신가요? {"  "}
-            <Modal
-              dimmer="blurring"
-              size={"mini"}
-              trigger={<span className="hrefTag">가입하기</span>}
-            >
-              <Modal.Content>
-                <h3>회원가입</h3>
-                <SignupForm />
-              </Modal.Content>
-            </Modal>
-          </Segment>
-        </Grid.Column>
-      )}
-    </Grid>
-  </div>
-);
-
-HomePage.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string
-  }).isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
-  logout: PropTypes.func.isRequired,
-  isConfirmed: PropTypes.bool.isRequired
-};
-
-function mapStateToProps(state) {
-  return {
-    user: state.user,
-    isConfirmed: !!state.user.confirmed,
-    isAuthenticated: !!state.user.token
-  };
+  render() {
+    return (
+      <div>
+        <h2>홈페이지</h2>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero dolor
+        culpa eius cum similique, esse deserunt, doloremque voluptatum suscipit
+        voluptatibus eaque! Aperiam dolore exercitationem laborum cum quaerat
+        quibusdam provident odio!
+      </div>
+    );
+  }
 }
 
-export default connect(mapStateToProps, {
-  logout: actions.logout
-})(HomePage);
+export default HomePage;

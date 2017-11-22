@@ -6,8 +6,26 @@
 }
 .mainEmoji {
   font-size: 8rem;
+  margin: 4rem 1rem;
 }
 .hrefTag {
   color: #4183c4;
   cursor: pointer;
+}
+.ui.container.homePageContent {
+  width: calc(100% - 325px);
+}
+.sideBarMenu.menu {
+  top: 66.41px;
+  box-shadow: none !important;
+  height: calc(100% - 66.41px) !important;
+}
+.innerHomePageContent {
+  margin-top: 65px;
+}
+.topMenu.menu{
+  box-shadow: none !important;
+}
+.blogWriteForm .error.field .field{
+  margin-bottom: 0;
 }

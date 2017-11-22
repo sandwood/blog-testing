@@ -27,6 +27,7 @@ export const logout = () => dispatch => {
 export const signup = data => dispatch =>
   api.user.signup(data).then(user => {
     localStorage.sandwBlogJWT = user.token;
+    setAuthorizationHeader(user.token);
     dispatch(userLoggedIn(user));
   });
 

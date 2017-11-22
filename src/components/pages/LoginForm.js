@@ -26,7 +26,6 @@ class LoginForm extends React.Component {
     const errors = this.validate(this.state.data);
     this.setState({ errors });
     if (Object.keys(errors).length === 0) {
-      console.log("onSubmit", this.state.data);
       this.setState({ loading: true });
       this.props
         .login(this.state.data)

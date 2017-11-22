@@ -30,10 +30,9 @@ class SignupForm extends React.Component {
       this.setState({ loading: true });
       this.props
         .signup(this.state.data)
-        .then(() => this.props.history.push("/"))
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
-        );
+        )
     }
   };
 
@@ -81,10 +80,7 @@ class SignupForm extends React.Component {
 }
 
 SignupForm.propTypes = {
-  signup: PropTypes.func.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired,
+  signup: PropTypes.func.isRequired
 };
 
 export default connect(null, { signup })(SignupForm);

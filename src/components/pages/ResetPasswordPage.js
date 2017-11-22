@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Message, Form, Button, Grid } from "semantic-ui-react";
+import { Container, Message, Form, Button, Grid } from "semantic-ui-react";
 import { connect } from "react-redux";
 import InlineError from "../messages/InlineError";
 import { validateToken, resetPassword } from "../../actions/auth";
@@ -57,14 +57,14 @@ class ResetPasswordPage extends React.Component {
     const { errors, data, loading, success } = this.state;
 
     return (
-      <div>
-        {loading && <Message>로딩중..</Message>}
-        {!loading &&
-          success && (
-            <Grid verticalAlign="middle" columns={3} centered>
-              <Grid.Row>
-                <Grid.Column>{" "}</Grid.Column>
-                <Grid.Column>
+      <Container>
+        <Grid verticalAlign="middle" columns={3} centered>
+          <Grid.Row>
+            <Grid.Column>{"   "}</Grid.Column>
+            <Grid.Column>
+              {loading && <Message>로딩중..</Message>}
+              {!loading &&
+                success && (
                   <Form onSubmit={this.onSubmit} loading={loading}>
                     <Form.Field error={!!errors.password}>
                       <label htmlFor="password">새로운 비밀번호</label>
@@ -98,13 +98,13 @@ class ResetPasswordPage extends React.Component {
 
                     <Button primary>다시설정</Button>
                   </Form>
-                </Grid.Column>
-                <Grid.Column>{" "}</Grid.Column>
-              </Grid.Row>
-            </Grid>
-          )}
-        {!loading && !success && <Message>토큰이 틀려요</Message>}
-      </div>
+                )}
+              {!loading && !success && <Message>토큰이 틀려요</Message>}
+            </Grid.Column>
+            <Grid.Column>{"   "}</Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Container>
     );
   }
 }
