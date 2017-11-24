@@ -1,6 +1,9 @@
 .container {
   padding-top: 1rem;
 }
+.centerAligned {
+  text-align: center;
+}
 .error span {
   font-size: 0.8rem;
 }
@@ -12,20 +15,39 @@
   color: #4183c4;
   cursor: pointer;
 }
-.ui.container.homePageContent {
-  width: calc(100% - 325px);
-}
 .sideBarMenu.menu {
   top: 66.41px;
   box-shadow: none !important;
   height: calc(100% - 66.41px) !important;
 }
-.innerHomePageContent {
-  margin-top: 65px;
+.container_ {
+  margin: 65px auto 0 auto;
+  width: calc(100% - 325px);
 }
 .topMenu.menu{
   box-shadow: none !important;
 }
 .blogWriteForm .error.field .field{
   margin-bottom: 0;
+}
+.headerWrapper .left.floated.header {
+  margin-bottom: 0;
+}
+.headerWrapper .right.floated.buttons {
+  margin-top: 0.2rem;
+}
+.headerWrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 480px) {
+  .container_ {
+    margin: 65px auto 0 auto;
+    width: calc(100% - 3rem);
+  }
+  .container_ .cards .card{
+    width: 100%;
+    margin: 0.5rem auto;
+  }
 }

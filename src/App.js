@@ -4,17 +4,19 @@ import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import ResetPasswordPage from "./components/pages/ResetPasswordPage";
 import ConfirmationPage from "./components/pages/ConfirmationPage";
+import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
-import PostPage from "./components/pages/PostPage";
-import DashboardPage from "./components/pages/DashboardPage";
+import BlogPage from "./components/pages/BlogPage";
+import NavBarsPage from "./components/pages/NavBarsPage";
 import "./components/pages/css/main.css";
 
 const App = ({ location, isAuthenticated, isConfirmed }) => (
   <div>
     {isConfirmed && isAuthenticated ? (
       <div>
-        <Route location={location} path="/" exact component={DashboardPage} />
-        <Route location={location} path="/blog" exact component={PostPage} />
+        <NavBarsPage />
+        <Route location={location} path="/" exact component={HomePage} />
+        <Route location={location} path="/blog" exact component={BlogPage} />
       </div>
     ) : (
       <div>

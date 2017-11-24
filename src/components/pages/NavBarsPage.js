@@ -2,12 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Container, Image, Sidebar, Menu } from "semantic-ui-react";
+import {
+  Container,
+  Image,
+  Sidebar,
+  Menu
+} from "semantic-ui-react";
 import * as actions from "../../actions/auth";
 import mainLogo from "../../img/11.png";
-import HomePage from "./HomePage";
+import profileImage from "../../img/sa.png";
 
-class DashboardPage extends React.Component {
+class NavBarsPage extends React.Component {
   state = {
     visible: false,
     sideBarNav: 1
@@ -22,7 +27,7 @@ class DashboardPage extends React.Component {
   render() {
     const { visible } = this.state;
     return (
-      <Container className="DashboardPageContent">
+      <Container className="NavBarsPageContent">
         <div className="ui top fixed fluid three labeled icon menu item small topMenu">
           <a
             role="button"
@@ -56,28 +61,33 @@ class DashboardPage extends React.Component {
           icon="labeled"
           vertical
         >
-          <a className="item" role="button" tabIndex="0">
+          <div className="item" role="button" tabIndex="0">
+            <Image src={profileImage} size="tiny" centered circular />
+            <br/>
+            {this.props.user.email}
+          </div>
+          <Link to="/blog" className="item" role="button" tabIndex="0">
             블로그
-          </a>
-          <a className="item" role="button" tabIndex="0">
-            메뉴2
-          </a>
-          <a className="item" role="button" tabIndex="0">
-            메뉴3
-          </a>
+          </Link>
         </Sidebar>
-        <Sidebar.Pusher className="innerDashboardPageContent">
-          <HomePage />
-        </Sidebar.Pusher>
       </Container>
     );
   }
 }
 
-DashboardPage.propTypes = {
-  logout: PropTypes.func.isRequired
+NavBarsPage.propTypes = {
+  logout: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    email: PropTypes.string
+  }).isRequired
 };
 
-export default connect(null, {
+function mapStateToProps(state) {
+  return {
+    user: state.user
+  };
+}
+
+export default connect(mapStateToProps, {
   logout: actions.logout
-})(DashboardPage);
+})(NavBarsPage);
