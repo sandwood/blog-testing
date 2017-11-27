@@ -24,10 +24,10 @@
   margin: 65px auto 0 auto;
   width: calc(100% - 325px);
 }
-.topMenu.menu{
+.topMenu.menu {
   box-shadow: none !important;
 }
-.blogWriteForm .error.field .field{
+.blogWriteForm .error.field .field {
   margin-bottom: 0;
 }
 .headerWrapper .left.floated.header {
@@ -43,14 +43,27 @@
 .modal .scrolling.content {
   white-space: pre-line;
 }
-
+.ui.dimmer {
+  background-color: #262626;
+}
+.whiteIcon {
+  color: white !important;
+  opacity: 1 !important;
+}
 @media screen and (max-width: 480px) {
   .container_ {
     margin: 65px auto 0 auto;
     width: calc(100% - 3rem);
   }
-  .container_ .cards .card{
+  .container_ .cards .card {
     width: 100%;
     margin: 0.5rem auto;
   }
+}
+
+@media only screen and (max-width: 1080px) {
+  .whiteIcon {
+    color: black !important;
+    opacity: 1 !important;
+  }  
 }

@@ -20,6 +20,8 @@ export default {
     create: post =>
       axios.post("/api/posts", { post }).then(res => res.data.post),
     edit: post => 
-      axios.post("/api/posts/edit", { post }).then(res => res.data.post)
+      axios.post("/api/posts/edit", { post }).then(res => res.data.post),
+    delete: post => 
+      axios.post("/api/posts/delete", { post }).then(res => res.data.post)
   }
 };

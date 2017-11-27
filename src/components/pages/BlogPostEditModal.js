@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Modal, Form, Button } from "semantic-ui-react";
+import { Modal, Form, Button, Icon } from "semantic-ui-react";
 
 class BlogPostEditModal extends React.Component {
   state = {
@@ -10,6 +10,7 @@ class BlogPostEditModal extends React.Component {
       title: this.props.pass[0].title,
       content: this.props.pass[0].content
     },
+    open: this.props.open,
     errors: {}
   };
 
@@ -27,16 +28,22 @@ class BlogPostEditModal extends React.Component {
         this.setState({ errors: err.response.data.errors, loading: false })
       );
   };
+  
+  onClickModal = () => {
+    this.props.get(this.state.open);
+    this.setState({ open: false });
+  }
 
   render() {
-    const { loading } = this.state;
-    const { open } = this.props;
+    const { loading, open } = this.state;
     return (
-      <Modal className="modalEditPost" open={open} size={"large"}>
+      <Modal className="modalEditPost" open={open} size={"small"}>
+        <Icon link className="whiteIcon" name="close" floated="right" onClick={this.onClickModal} />
         <Modal.Header>
           <h2>포스트 수정</h2>
         </Modal.Header>
         <Modal.Content scrolling>
+
           <Form loading={loading}>
             <Form.Input
               name="title"
@@ -61,13 +68,6 @@ class BlogPostEditModal extends React.Component {
             labelPosition="right"
             onClick={this.onSubmit}
           />
-          <Button
-            content="취소"
-            color="red"
-            icon="window close"
-            labelPosition="right"
-            onClick={() => window.location.reload()}
-          />
         </Modal.Actions>
       </Modal>
     );
@@ -82,8 +82,9 @@ BlogPostEditModal.propTypes = {
       content: PropTypes.string.isRequired
     }).isRequired
   ).isRequired,
+  get: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  submit: PropTypes.func.isRequired,
+  submit: PropTypes.func.isRequired
 };
 
 export default BlogPostEditModal;
