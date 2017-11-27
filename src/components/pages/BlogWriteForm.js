@@ -29,7 +29,7 @@ class BlogWriteForm extends React.Component {
     if (Object.keys(errors).length === 0) {
       this.setState({ loading: true });
       this.props
-        .createPost(this.state.data)
+        .submit(this.state.data)
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
         ).then(window.location.reload());
@@ -60,6 +60,7 @@ class BlogWriteForm extends React.Component {
         </Form.Field>
         <Form.Field error={!!errors.content}>
           <Form.TextArea
+            autoHeight
             label="내용"
             id="content"
             name="content"
@@ -80,10 +81,10 @@ class BlogWriteForm extends React.Component {
 }
 
 BlogWriteForm.propTypes = {
-  createPost: PropTypes.func.isRequired,
   user: PropTypes.shape({
     email: PropTypes.string.isRequired,
   }).isRequired,
+  submit: PropTypes.func.isRequired,
 };
 
 

@@ -8,21 +8,26 @@ import {
   Icon,
   Header,
   Divider,
+  Loader,
   Statistic
 } from "semantic-ui-react";
-import { fetchPosts } from "../../actions/posts";
+import { fetchPosts, createPost, editPost } from "../../actions/posts";
 import { allPostsSelector } from "../../reducers/posts";
 import BlogWriteForm from "./BlogWriteForm";
+import BlogPostEditModal from "./BlogPostEditModal";
 
 class PostsList extends React.Component {
   state = {
     moreBlog: 6,
     clickCounter: 1,
     open: false,
-    foundPost: {}
+    foundPost: {},
+    loading: true,
+    editModalOpen: false
   };
 
-  componentDidMount = () => this.props.fetchPosts();
+  componentDidMount = () =>
+    this.props.fetchPosts().then(() => this.setState({ loading: false }));
 
   onClickMore = () => {
     const loadMore = this.state.moreBlog + 6;
@@ -38,13 +43,21 @@ class PostsList extends React.Component {
     });
   };
 
-  onClickEditPost = () => {};
+  onClickEditPost = () => {
+    this.setState({ open: false, editModalOpen: true });
+  };
+
+  submitPost = data =>
+    this.props.createPost(data).then(() => window.location.reload());
+
+  submitEdit = data => 
+    this.props.editPost(data).then(() => window.location.reload());
 
   close = () => this.setState({ open: false });
 
   render() {
     const { posts } = this.props;
-    const { open, foundPost } = this.state;
+    const { open, foundPost, loading } = this.state;
     return (
       <div className="container_ centerAligned">
         <div className="headerWrapper">
@@ -56,7 +69,6 @@ class PostsList extends React.Component {
             trigger={
               <Button.Group
                 floated="right"
-                compact
                 size="mini"
                 role="button"
                 tabIndex={0}
@@ -73,24 +85,27 @@ class PostsList extends React.Component {
           >
             <Modal.Content>
               <h3>글쓰기</h3>
-              <BlogWriteForm />
+              <BlogWriteForm submit={this.submitPost} />
             </Modal.Content>
           </Modal>
         </div>
         <Divider />
         <Card.Group>
+          {loading && <Loader active />}
           {posts.slice(0, this.state.moreBlog).map(post => (
             <Card
+              centered
               key={post._id}
               link
               data-title={post.title}
               onClick={this.onClickPost}
             >
-              <Card.Content header={post.title} />
+              <Card.Content textAlign="left" header={post.title} />
               <Card.Content
+                textAlign="left"
                 description={post.content.substring(0, 15).concat("..")}
               />
-              <Card.Content extra>
+              <Card.Content textAlign="left" extra>
                 <Icon name="time" />
                 {post.updatedAt.slice(0, -5).replace("T", " ")}
               </Card.Content>
@@ -98,10 +113,13 @@ class PostsList extends React.Component {
           ))}
         </Card.Group>
         {foundPost[0] && (
-          <Modal open={open} size={"large"}>
+          <Modal className="modalPost" open={open} size={"large"}>
+            <Icon link name="close" floated="right" onClick={this.close} />
             <Modal.Header className="centerAligned">
               <Statistic size="small">
-                <Statistic.Label>{foundPost[0].updatedAt.slice(0, -5).replace("T", " ")}</Statistic.Label>
+                <Statistic.Label>
+                  {foundPost[0].updatedAt.slice(0, -5).replace("T", " ")}
+                </Statistic.Label>
                 <Statistic.Value>{foundPost[0].title}</Statistic.Value>
               </Statistic>
             </Modal.Header>
@@ -114,22 +132,21 @@ class PostsList extends React.Component {
                 labelPosition="right"
                 onClick={this.onClickEditPost}
               />
-              <Button
-                content="닫기"
-                color="red"
-                icon="window close"
-                labelPosition="right"
-                onClick={this.close}
-              />
             </Modal.Actions>
           </Modal>
+        )}
+        {this.state.editModalOpen && (
+          <BlogPostEditModal
+            open={this.state.editModalOpen}
+            pass={this.state.foundPost}
+            submit={this.submitEdit}
+          />
         )}
         <br />
         {this.state.clickCounter > Math.floor(this.props.posts.length / 5) ? (
           <span>{}</span>
         ) : (
-          <Button onClick={this.onClickMore}>더보기
-          </Button>
+          <Button onClick={this.onClickMore}>더보기</Button>
         )}
         <br />
         <br />
@@ -137,6 +154,7 @@ class PostsList extends React.Component {
     );
   }
 }
+
 PostsList.propTypes = {
   fetchPosts: PropTypes.func.isRequired,
   posts: PropTypes.arrayOf(
@@ -144,7 +162,9 @@ PostsList.propTypes = {
       title: PropTypes.string.isRequired,
       content: PropTypes.string.isRequired
     }).isRequired
-  ).isRequired
+  ).isRequired,
+  createPost: PropTypes.func.isRequired,
+  editPost: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -153,4 +173,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchPosts })(PostsList);
+export default connect(mapStateToProps, { fetchPosts, createPost, editPost })(PostsList);

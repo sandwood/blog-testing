@@ -40,6 +40,9 @@
   position: relative;
   overflow: hidden;
 }
+.modal .scrolling.content {
+  white-space: pre-line;
+}
 
 @media screen and (max-width: 480px) {
   .container_ {

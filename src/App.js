@@ -33,6 +33,7 @@ const App = ({ location, isAuthenticated, isConfirmed }) => (
           exact
           component={ConfirmationPage}
         />
+        <Route location={location} path="/blog" exact component={LoginPage} />
       </div>
     )}
   </div>

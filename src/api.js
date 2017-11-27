@@ -18,6 +18,8 @@ export default {
   posts: {
     fetchAll: () => axios.get("/api/posts").then(res => res.data.posts),
     create: post =>
-      axios.post("/api/posts", { post }).then(res => res.data.post)
+      axios.post("/api/posts", { post }).then(res => res.data.post),
+    edit: post => 
+      axios.post("/api/posts/edit", { post }).then(res => res.data.post)
   }
 };

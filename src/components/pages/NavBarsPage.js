@@ -66,6 +66,10 @@ class NavBarsPage extends React.Component {
             <br/>
             {this.props.user.email}
           </div>
+
+          <Link to="/" role="button" className="item">
+          홈
+          </Link>
           <Link to="/blog" className="item" role="button" tabIndex="0">
             블로그
           </Link>
