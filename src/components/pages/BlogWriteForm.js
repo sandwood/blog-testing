@@ -1,19 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
-import { Form, Button } from "semantic-ui-react";
+import { Form, Button, Image, Segment } from "semantic-ui-react";
 import InlineError from "../messages/InlineError";
-import { createPost } from "../../actions/posts";
+import { createImage } from "../../actions/posts";
+import { allPostsSelector } from "../../reducers/posts";
 
 class BlogWriteForm extends React.Component {
   state = {
     data: {
       title: "",
       writer: this.props.user.email,
-      content: "",
+      content: ""
     },
     loading: false,
-    errors: {}
+    errors: {},
+    imgURL: ""
+  };
+
+  onDrop = files => {
+    this.props
+      .createImage(files[0])
+      .then(res => this.setState({ imgURL: res }))
+      .catch(err => console.log(err));
   };
 
   onChange = e => {
@@ -32,7 +42,8 @@ class BlogWriteForm extends React.Component {
         .submit(this.state.data)
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
-        ).then(window.location.reload());
+        )
+        .then(window.location.reload());
     }
   };
 
@@ -47,7 +58,7 @@ class BlogWriteForm extends React.Component {
     const { data, errors, loading } = this.state;
 
     return (
-      <Form className="blogWriteForm" onSubmit={this.onSubmit} loading={loading}>
+      <Form className="blogWriteForm" loading={loading}>
         <Form.Field error={!!errors.title}>
           <Form.Input
             label="제목"
@@ -69,8 +80,18 @@ class BlogWriteForm extends React.Component {
           />
           {errors.content && <InlineError text={errors.content} />}
         </Form.Field>
+        <Segment>
+          <Image src={this.state.imgURL} />
+          {!this.state.imgURL && (
+            <Dropzone onDrop={this.onDrop}>
+              <div verticaly>
+                이곳을 클릭 또는 파일을 드랍해서 사진업로드를 하세요.
+              </div>
+            </Dropzone>
+          )}
+        </Segment>
         <Form.Field>
-          <Button type="submit" primary>
+          <Button type="submit" onClick={this.onSubmit} primary>
             올리기
           </Button>
         </Form.Field>
@@ -82,16 +103,17 @@ class BlogWriteForm extends React.Component {
 
 BlogWriteForm.propTypes = {
   user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
   }).isRequired,
   submit: PropTypes.func.isRequired,
+  createImage: PropTypes.func.isRequired
 };
-
 
 function mapStateToProps(state) {
   return {
     user: state.user,
+    posts: allPostsSelector(state)
   };
 }
 
-export default connect(mapStateToProps, { createPost })(BlogWriteForm);
+export default connect(mapStateToProps, { createImage })(BlogWriteForm);

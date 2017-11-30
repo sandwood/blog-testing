@@ -197,8 +197,9 @@ class PostsList extends React.Component {
           // ////////// Confirmation for delete ///////// //
           <Confirm
             open={this.state.confirm}
-            cancelButton="됐어요"
-            confirmButton="네 지워주세요"
+            content="확실하세요?"
+            cancelButton="아니요, 됐어요"
+            confirmButton="네, 지워주세요"
             onCancel={this.onClickConfirmationClose}
             onConfirm={this.onSubmitDeletion}
           />
@@ -216,7 +217,7 @@ class PostsList extends React.Component {
         <br />
         {/* ////////// Loading more posts  ////////// */}
         {this.state.clickCounter > Math.floor(this.props.posts.length / 5) ? (
-          <span>끝</span>
+          <span>- 끝 -</span>
         ) : (
           <Button onClick={this.onClickMore}>더보기</Button>
         )}

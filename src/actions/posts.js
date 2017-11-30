@@ -1,4 +1,9 @@
-import { POSTS_FETCHED, POST_CREATED, POST_EDITED, POST_DELETED} from "../types";
+import {
+  POSTS_FETCHED,
+  POST_CREATED,
+  POST_EDITED,
+  POST_DELETED
+} from "../types";
 import api from "../api";
 
 const postsFetched = data => ({
@@ -32,3 +37,5 @@ export const editPost = data => dispatch =>
 
 export const deletePost = data => dispatch =>
   api.posts.delete(data).then(post => dispatch(postDeleted(post)));
+
+export const createImage = data => () => api.posts.uploadImage(data);

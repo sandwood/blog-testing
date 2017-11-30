@@ -17,6 +17,18 @@ const App = ({ location, isAuthenticated, isConfirmed }) => (
         <NavBarsPage />
         <Route location={location} path="/" exact component={HomePage} />
         <Route location={location} path="/blog" exact component={BlogPage} />
+        <Route
+          location={location}
+          path="/reset_password/:token"
+          exact
+          component={ResetPasswordPage}
+        />
+        <Route
+          location={location}
+          path="/confirmation/:token"
+          exact
+          component={ConfirmationPage}
+        />
       </div>
     ) : (
       <div>
