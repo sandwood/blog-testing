@@ -1,29 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
+import upload from "superagent";
 import { connect } from "react-redux";
 import { Form, Button, Image, Segment } from "semantic-ui-react";
 import InlineError from "../messages/InlineError";
-import { createImage } from "../../actions/posts";
-import { allPostsSelector } from "../../reducers/posts";
+// import { allPostsSelector } from "../../reducers/posts";
 
 class BlogWriteForm extends React.Component {
   state = {
     data: {
       title: "",
       writer: this.props.user.email,
-      content: ""
+      content: "",
+      imgURL: []
     },
     loading: false,
-    errors: {},
-    imgURL: ""
+    errors: {}
   };
 
   onDrop = files => {
-    this.props
-      .createImage(files[0])
-      .then(res => this.setState({ imgURL: res }))
-      .catch(err => console.log(err));
+    files.forEach(file => {
+      upload
+        .post("/api/posts/uploadImages")
+        .set({ Authorization: `Bearer ${localStorage.sandwBlogJWT}` })
+        .attach("file", file)
+        .then(res =>
+          this.setState({
+            data: {
+              ...this.state.data,
+              imgURL: this.state.data.imgURL.concat(res.body.imgURL)
+            }
+          })
+        )
+        .catch(err => console.log(err));
+    });
   };
 
   onChange = e => {
@@ -43,8 +54,12 @@ class BlogWriteForm extends React.Component {
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
         )
-        .then(window.location.reload());
+        // .then(window.location.reload());
     }
+  };
+
+  onClickDeleteImg = index => {
+    this.setState(this.state.data.imgURL.splice(index, 1));
   };
 
   validate = data => {
@@ -69,6 +84,27 @@ class BlogWriteForm extends React.Component {
           />
           {errors.title && <InlineError text={errors.title} />}
         </Form.Field>
+        <Segment className="dropzoneWrapper">
+          {this.state.data.imgURL &&
+            this.state.data.imgURL.map((img, index) => (
+              <Image
+                key={img}
+                className="sumnail"
+                label={{
+                  as: "a",
+                  color: "red",
+                  corner: "right",
+                  icon: "delete",
+                  onClick: () => this.onClickDeleteImg(index)
+                }}
+                src={img}
+              />
+            ))}
+          <br />
+          <Dropzone className="dropzone" onDrop={this.onDrop}>
+            <div>이곳을 클릭 또는 파일을 드랍해서 사진업로드를 하세요.</div>
+          </Dropzone>
+        </Segment>
         <Form.Field error={!!errors.content}>
           <Form.TextArea
             autoHeight
@@ -80,16 +116,6 @@ class BlogWriteForm extends React.Component {
           />
           {errors.content && <InlineError text={errors.content} />}
         </Form.Field>
-        <Segment>
-          <Image src={this.state.imgURL} />
-          {!this.state.imgURL && (
-            <Dropzone onDrop={this.onDrop}>
-              <div verticaly>
-                이곳을 클릭 또는 파일을 드랍해서 사진업로드를 하세요.
-              </div>
-            </Dropzone>
-          )}
-        </Segment>
         <Form.Field>
           <Button type="submit" onClick={this.onSubmit} primary>
             올리기
@@ -105,15 +131,14 @@ BlogWriteForm.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string.isRequired
   }).isRequired,
-  submit: PropTypes.func.isRequired,
-  createImage: PropTypes.func.isRequired
+  submit: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   return {
     user: state.user,
-    posts: allPostsSelector(state)
+    posts: state.posts
   };
 }
 
-export default connect(mapStateToProps, { createImage })(BlogWriteForm);
+export default connect(mapStateToProps, null)(BlogWriteForm);

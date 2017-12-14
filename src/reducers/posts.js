@@ -1,20 +1,19 @@
-import { createSelector } from "reselect";
-import { POSTS_FETCHED, POST_CREATED } from "../types";
+// import { createSelector } from "reselect";
+import {
+  POSTS_FETCHED,
+  POST_CREATED,
+  POST_DELETED,
+  POST_EDITED
+} from "../types";
 
 export default function posts(state = {}, action = {}) {
   switch (action.type) {
     case POSTS_FETCHED:
+      return action.data;
+    case POST_DELETED:
+    case POST_EDITED:
     case POST_CREATED:
-      return { ...state, ...action.data };
     default:
       return state;
   }
 }
-
-// SELECTORS
-
-export const postsSelector = state => state.posts;
-
-export const allPostsSelector = createSelector(postsSelector, postsHash =>
-  Object.values(postsHash)
-);

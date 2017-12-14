@@ -1,5 +1,4 @@
 import axios from "axios";
-import upload from "superagent";
 
 export default {
   user: {
@@ -17,19 +16,13 @@ export default {
     resetPassword: data => axios.post("/api/auth/reset_password", { data })
   },
   posts: {
-    fetchAll: () => axios.get("/api/posts").then(res => res.data.posts),
+    fetchAll: post => 
+      axios.post("/api/posts", { post }).then(res => res.data.posts),
     create: post =>
-      axios.post("/api/posts", { post }).then(res => res.data.post),
+      axios.post("/api/posts/create", { post }).then(res => res.data.post),
     edit: post =>
       axios.post("/api/posts/edit", { post }).then(res => res.data.post),
     delete: post =>
-      axios.post("/api/posts/delete", { post }).then(res => res.data.post),
-
-    uploadImage: img =>
-      upload
-        .post("/api/posts/uploadImages")
-        .set({ Authorization: `Bearer ${localStorage.sandwBlogJWT}` })
-        .attach("file", img)
-        .then(res => res.body.imgURL)
+      axios.post("/api/posts/delete", { post }).then(res => res.data.post)
   }
 };

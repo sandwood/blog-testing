@@ -11,6 +11,7 @@ import {
   Loader,
   Confirm,
   Statistic,
+  Image,
   Dimmer
 } from "semantic-ui-react";
 import {
@@ -19,41 +20,77 @@ import {
   editPost,
   deletePost
 } from "../../actions/posts";
-import { allPostsSelector } from "../../reducers/posts";
 import BlogWriteForm from "./BlogWriteForm";
 import BlogPostEditModal from "./BlogPostEditModal";
 
 class PostsList extends React.Component {
   state = {
-    moreBlog: 6,
-    clickCounter: 1,
+    posts: {
+      docs: [],
+      total: 0
+    },
     foundPost: {},
     loading: true,
     confirm: false,
     createModalOpen: false,
     detailModalOpen: false,
-    editModalOpen: false
+    editModalOpen: false,
+    dimmer: true,
+    getTitlesOptions: {
+      page: 1,
+      pageNumber: 6
+    }
   };
 
   // Fetch all posts
-  componentDidMount = () =>
-    this.props.fetchPosts().then(() => this.setState({ loading: false }));
+  componentWillMount = () => {
+    this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
+      this.setState({
+        loading: false,
+        posts: {
+          ...this.props.posts,
+          docs: this.props.posts.docs,
+          total: this.props.posts.total
+        }
+      });
+    });
+  };
 
   // Show more posts
+
   onClickMore = () => {
-    const loadMore = this.state.moreBlog + 6;
-    const counter = this.state.clickCounter + 1;
-    this.setState({ moreBlog: loadMore, clickCounter: counter });
+    this.setState(
+      {
+        getTitlesOptions: {
+          ...this.state.getTitlesOptions,
+          page: this.state.getTitlesOptions.page + 1
+        },
+        loading: true
+      },
+      () => {
+        this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
+          this.setState({
+            loading: false,
+            posts: {
+              ...this.state.posts,
+              docs: this.state.posts.docs.concat(this.props.posts.docs)
+            }
+          });
+        });
+      }
+    );
   };
 
   // Detail Post Modal handler
   onClickDetailPostOpen = e => {
+    const { docs } = this.state.posts;
     const postToFind = e.currentTarget.dataset.title;
     this.setState({
       detailModalOpen: true,
-      foundPost: this.props.posts.filter(post => post.title === postToFind)
+      foundPost: docs.filter(post => post.title === postToFind)
     });
   };
+
   onClickCloseDetailModal = () => this.setState({ detailModalOpen: false });
 
   // Create Post Modal handler
@@ -88,10 +125,20 @@ class PostsList extends React.Component {
     this.props.deletePost(data).then(() => window.location.reload());
 
   render() {
-    const { posts } = this.props;
-    const { detailModalOpen, createModalOpen, foundPost, loading } = this.state;
+    const {
+      detailModalOpen,
+      createModalOpen,
+      foundPost,
+      loading,
+      posts
+    } = this.state;
     return (
       <div className="container_ centerAligned">
+        {loading && (
+          <Dimmer active>
+            <Loader>로딩중..</Loader>
+          </Dimmer>
+        )}
         <div className="headerWrapper">
           <Header floated="left" as="h2">
             블로그
@@ -127,36 +174,44 @@ class PostsList extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
+
         <Divider />
+
         <Card.Group>
-          {loading && (
-            <Dimmer active>
-              <Loader>로딩중..</Loader>
-            </Dimmer>
-          )}
           {/* ////////// Map posts to Cards ////////// */}
-          {posts.slice(0, this.state.moreBlog).map(post => (
-            <Card
-              centered
-              key={post._id}
-              link
-              data-title={post.title}
-              onClick={this.onClickDetailPostOpen}
-            >
-              <Card.Content textAlign="left" header={post.title} />
-              <Card.Content
-                textAlign="left"
-                description={post.content.substring(0, 15).concat("..")}
-              />
-              <Card.Content textAlign="left" extra>
-                <Icon name="time" />
-                {post.updatedAt.slice(0, -5).replace("T", " ")}
-              </Card.Content>
-            </Card>
-          ))}
+          {posts.docs ? (
+            posts.docs.map(post => (
+              <Card
+                centered
+                key={post._id}
+                link
+                data-title={post.title}
+                onClick={this.onClickDetailPostOpen}
+              >
+                <Card.Content textAlign="left" extra>
+                  <Icon name="time" />
+                  {post.updatedAt.slice(0, -5).replace("T", " ")}
+                </Card.Content>
+                {post.imgURL && (
+                  <Image
+                    src={post.imgURL.split(",")[0]}
+                    key={post.imgURL.split(",")[0]}
+                  />
+                )}
+                <Card.Content textAlign="left" header={post.title} />
+                <Card.Content
+                  textAlign="left"
+                  description={post.content.substring(0, 50).concat(" ..")}
+                />
+              </Card>
+            ))
+          ) : (
+            <div>포스트가 없습니다.</div>
+          )}
         </Card.Group>
+
+        {/* //////// Deatail Modal ////////// */}
         {foundPost[0] && (
-          // //////// Deatail Modal ////////// //
           <Modal className="modalPost" open={detailModalOpen} size={"small"}>
             <Icon
               link
@@ -173,7 +228,14 @@ class PostsList extends React.Component {
                 <Statistic.Value>{foundPost[0].title}</Statistic.Value>
               </Statistic>
             </Modal.Header>
-            <Modal.Content scrolling>{foundPost[0].content}</Modal.Content>
+            <Modal.Content scrolling>
+              {foundPost[0].imgURL &&
+                foundPost[0].imgURL
+                  .split(",")
+                  .map(img => <Image src={img} key={img} />)}
+              <br />
+              {foundPost[0].content}
+            </Modal.Content>
             <Modal.Actions>
               <Button
                 content="지우기"
@@ -193,8 +255,8 @@ class PostsList extends React.Component {
           </Modal>
         )}
 
+        {/* ////////// Confirmation for delete ///////// */}
         {this.state.confirm && (
-          // ////////// Confirmation for delete ///////// //
           <Confirm
             open={this.state.confirm}
             content="확실하세요?"
@@ -205,8 +267,8 @@ class PostsList extends React.Component {
           />
         )}
 
+        {/* ////////// Post Edit Modal ////////// */}
         {this.state.editModalOpen && (
-          // ////////// Post Edit Modal ////////// //
           <BlogPostEditModal
             open={this.state.editModalOpen}
             get={this.getEditModalOpen}
@@ -215,8 +277,12 @@ class PostsList extends React.Component {
           />
         )}
         <br />
+
         {/* ////////// Loading more posts  ////////// */}
-        {this.state.clickCounter > Math.floor(this.props.posts.length / 5) ? (
+        {this.state.posts.total -
+          this.state.getTitlesOptions.pageNumber *
+            this.state.getTitlesOptions.page <=
+        0 ? (
           <span>- 끝 -</span>
         ) : (
           <Button onClick={this.onClickMore}>더보기</Button>
@@ -230,12 +296,15 @@ class PostsList extends React.Component {
 
 PostsList.propTypes = {
   fetchPosts: PropTypes.func.isRequired,
-  posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired
-    }).isRequired
-  ).isRequired,
+  posts: PropTypes.shape({
+    docs: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        content: PropTypes.string.isRequired
+      }).isRequired
+    ),
+    total: PropTypes.number
+  }).isRequired,
   createPost: PropTypes.func.isRequired,
   editPost: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired
@@ -243,7 +312,7 @@ PostsList.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    posts: allPostsSelector(state)
+    posts: state.posts
   };
 }
 

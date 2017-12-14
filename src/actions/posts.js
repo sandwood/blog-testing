@@ -11,23 +11,20 @@ const postsFetched = data => ({
   data
 });
 
-const postCreated = data => ({
-  type: POST_CREATED,
-  data
+const postCreated = () => ({
+  type: POST_CREATED
 });
 
-const postEdited = data => ({
-  type: POST_EDITED,
-  data
+const postEdited = () => ({
+  type: POST_EDITED
 });
 
-const postDeleted = data => ({
-  type: POST_DELETED,
-  data
+const postDeleted = () => ({
+  type: POST_DELETED
 });
 
-export const fetchPosts = () => dispatch =>
-  api.posts.fetchAll().then(posts => dispatch(postsFetched(posts)));
+export const fetchPosts = data => dispatch =>
+  api.posts.fetchAll(data).then(posts => dispatch(postsFetched(posts)));
 
 export const createPost = data => dispatch =>
   api.posts.create(data).then(post => dispatch(postCreated(post)));
@@ -37,5 +34,3 @@ export const editPost = data => dispatch =>
 
 export const deletePost = data => dispatch =>
   api.posts.delete(data).then(post => dispatch(postDeleted(post)));
-
-export const createImage = data => () => api.posts.uploadImage(data);
