@@ -7,7 +7,7 @@ import { Form, Button, Image, Segment } from "semantic-ui-react";
 import InlineError from "../messages/InlineError";
 // import { allPostsSelector } from "../../reducers/posts";
 
-class BlogWriteForm extends React.Component {
+class WritePostForm extends React.Component {
   state = {
     data: {
       title: "",
@@ -54,7 +54,6 @@ class BlogWriteForm extends React.Component {
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
         )
-        // .then(window.location.reload());
     }
   };
 
@@ -73,7 +72,7 @@ class BlogWriteForm extends React.Component {
     const { data, errors, loading } = this.state;
 
     return (
-      <Form className="blogWriteForm" loading={loading}>
+      <Form className="WritePostForm" loading={loading}>
         <Form.Field error={!!errors.title}>
           <Form.Input
             label="제목"
@@ -127,7 +126,7 @@ class BlogWriteForm extends React.Component {
   }
 }
 
-BlogWriteForm.propTypes = {
+WritePostForm.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string.isRequired
   }).isRequired,
@@ -141,4 +140,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(BlogWriteForm);
+export default connect(mapStateToProps, null)(WritePostForm);

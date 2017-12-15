@@ -5,7 +5,7 @@ import upload from "superagent";
 import { Modal, Segment, Image, Form, Button, Icon } from "semantic-ui-react";
 import InlineError from "../messages/InlineError";
 
-class BlogPostEditModal extends React.Component {
+class EditPostModal extends React.Component {
   state = {
     loading: false,
     data: {
@@ -52,8 +52,7 @@ class BlogPostEditModal extends React.Component {
         .submit(this.state.data)
         .catch(err =>
           this.setState({ errors: err.response.data.errors, loading: false })
-        )
-        .then(window.location.reload());
+        );
     }
   };
 
@@ -149,7 +148,7 @@ class BlogPostEditModal extends React.Component {
   }
 }
 
-BlogPostEditModal.propTypes = {
+EditPostModal.propTypes = {
   pass: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -163,4 +162,4 @@ BlogPostEditModal.propTypes = {
   submit: PropTypes.func.isRequired
 };
 
-export default BlogPostEditModal;
+export default EditPostModal;

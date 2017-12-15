@@ -20,8 +20,8 @@ import {
   editPost,
   deletePost
 } from "../../actions/posts";
-import BlogWriteForm from "./BlogWriteForm";
-import BlogPostEditModal from "./BlogPostEditModal";
+import WritePostForm from "./WritePostForm";
+import EditPostModal from "./EditPostModal";
 
 class PostsList extends React.Component {
   state = {
@@ -31,29 +31,20 @@ class PostsList extends React.Component {
     },
     foundPost: {},
     loading: true,
-    confirm: false,
+    confirmationModalOpen: false,
     createModalOpen: false,
     detailModalOpen: false,
     editModalOpen: false,
     dimmer: true,
     getTitlesOptions: {
       page: 1,
-      pageNumber: 6
+      pageNumber: 9
     }
   };
 
   // Fetch all posts
   componentWillMount = () => {
-    this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
-      this.setState({
-        loading: false,
-        posts: {
-          ...this.props.posts,
-          docs: this.props.posts.docs,
-          total: this.props.posts.total
-        }
-      });
-    });
+    this.reloadPosts();
   };
 
   // Show more posts
@@ -98,8 +89,10 @@ class PostsList extends React.Component {
   onClickCloseCreatePostModal = () => this.setState({ createModalOpen: false });
 
   // Confirmation Modal handler
-  onClickConfirmationOpen = () => this.setState({ confirm: true });
-  onClickConfirmationClose = () => this.setState({ confirm: false });
+  onClickConfirmationModalOpen = () =>
+    this.setState({ confirmationModalOpen: true });
+  onClickConfirmationModalClose = () =>
+    this.setState({ confirmationModalOpen: false });
 
   // Edit Post Modal handler
   onClickOpenEditPost = () =>
@@ -116,13 +109,39 @@ class PostsList extends React.Component {
     });
   };
 
+  reloadPosts = () => {
+    this.setState({
+      loading: true,
+      getTitlesOptions: { ...this.state.getTitlesOptions, page: 1 }
+    });
+    this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
+      this.setState({
+        loading: false,
+        posts: {
+          ...this.props.posts,
+          docs: this.props.posts.docs,
+          total: this.props.posts.total
+        }
+      });
+    });
+  };
+
   // Submits from actions
   submitPost = data =>
-    this.props.createPost(data).then(() => window.location.reload());
+    this.props.createPost(data).then(() => {
+      this.setState({ createModalOpen: false });
+      this.reloadPosts();
+    });
   submitEdit = data =>
-    this.props.editPost(data).then(() => window.location.reload());
+    this.props.editPost(data).then(() => {
+      this.setState({ editModalOpen: false });
+      this.reloadPosts();
+    });
   submitDelete = data =>
-    this.props.deletePost(data).then(() => window.location.reload());
+    this.props.deletePost(data).then(() => {
+      this.setState({ confirmationModalOpen: false, detailModalOpen: false });
+      this.reloadPosts();
+    });
 
   render() {
     const {
@@ -135,7 +154,7 @@ class PostsList extends React.Component {
     return (
       <div className="container_ centerAligned">
         {loading && (
-          <Dimmer active>
+          <Dimmer inverted active>
             <Loader>로딩중..</Loader>
           </Dimmer>
         )}
@@ -170,7 +189,7 @@ class PostsList extends React.Component {
             />
             <Modal.Content>
               <h3>글쓰기</h3>
-              <BlogWriteForm submit={this.submitPost} />
+              <WritePostForm submit={this.submitPost} />
             </Modal.Content>
           </Modal>
         </div>
@@ -242,7 +261,7 @@ class PostsList extends React.Component {
                 color="red"
                 icon="delete"
                 labelPosition="right"
-                onClick={this.onClickConfirmationOpen}
+                onClick={this.onClickConfirmationModalOpen}
               />
               <Button
                 content="수정하기"
@@ -256,20 +275,20 @@ class PostsList extends React.Component {
         )}
 
         {/* ////////// Confirmation for delete ///////// */}
-        {this.state.confirm && (
+        {this.state.confirmationModalOpen && (
           <Confirm
-            open={this.state.confirm}
+            open={this.state.confirmationModalOpen}
             content="확실하세요?"
             cancelButton="아니요, 됐어요"
             confirmButton="네, 지워주세요"
-            onCancel={this.onClickConfirmationClose}
+            onCancel={this.onClickConfirmationModalClose}
             onConfirm={this.onSubmitDeletion}
           />
         )}
 
         {/* ////////// Post Edit Modal ////////// */}
         {this.state.editModalOpen && (
-          <BlogPostEditModal
+          <EditPostModal
             open={this.state.editModalOpen}
             get={this.getEditModalOpen}
             pass={this.state.foundPost}
