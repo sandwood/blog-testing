@@ -22,6 +22,7 @@ import {
 } from "../../actions/posts";
 import WritePostForm from "./WritePostForm";
 import EditPostModal from "./EditPostModal";
+import SearchPostInput from "./SearchPostInput";
 
 class PostsList extends React.Component {
   state = {
@@ -36,7 +37,7 @@ class PostsList extends React.Component {
     detailModalOpen: false,
     editModalOpen: false,
     dimmer: true,
-    getTitlesOptions: {
+    getPostsOptions: {
       page: 1,
       pageNumber: 9
     }
@@ -52,14 +53,14 @@ class PostsList extends React.Component {
   onClickMore = () => {
     this.setState(
       {
-        getTitlesOptions: {
-          ...this.state.getTitlesOptions,
-          page: this.state.getTitlesOptions.page + 1
+        getPostsOptions: {
+          ...this.state.getPostsOptions,
+          page: this.state.getPostsOptions.page + 1
         },
         loading: true
       },
       () => {
-        this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
+        this.props.fetchPosts(this.state.getPostsOptions).then(() => {
           this.setState({
             loading: false,
             posts: {
@@ -112,9 +113,9 @@ class PostsList extends React.Component {
   reloadPosts = () => {
     this.setState({
       loading: true,
-      getTitlesOptions: { ...this.state.getTitlesOptions, page: 1 }
+      getPostsOptions: { ...this.state.getPostsOptions, page: 1 }
     });
-    this.props.fetchPosts(this.state.getTitlesOptions).then(() => {
+    this.props.fetchPosts(this.state.getPostsOptions).then(() => {
       this.setState({
         loading: false,
         posts: {
@@ -162,6 +163,7 @@ class PostsList extends React.Component {
           <Header floated="left" as="h2">
             블로그
           </Header>
+          <SearchPostInput />
           <Button.Group
             floated="right"
             size="mini"
@@ -299,8 +301,8 @@ class PostsList extends React.Component {
 
         {/* ////////// Loading more posts  ////////// */}
         {this.state.posts.total -
-          this.state.getTitlesOptions.pageNumber *
-            this.state.getTitlesOptions.page <=
+          this.state.getPostsOptions.pageNumber *
+            this.state.getPostsOptions.page <=
         0 ? (
           <span>- 끝 -</span>
         ) : (

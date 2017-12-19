@@ -16,7 +16,7 @@ export default {
     resetPassword: data => axios.post("/api/auth/reset_password", { data })
   },
   posts: {
-    fetchAll: post => 
+    fetchAll: post =>
       axios.post("/api/posts", { post }).then(res => res.data.posts),
     create: post =>
       axios.post("/api/posts/create", { post }).then(res => res.data.post),
@@ -24,5 +24,11 @@ export default {
       axios.post("/api/posts/edit", { post }).then(res => res.data.post),
     delete: post =>
       axios.post("/api/posts/delete", { post }).then(res => res.data.post)
+  },
+  titles: {
+    fetchAllTitles: () =>
+      axios.get("/api/posts/searchPost").then(res => res.data.titles),
+    search: title =>
+      axios.post("/api/posts/searchPost", { title }).then(res => res.data.post)
   }
 };

@@ -1,6 +1,9 @@
 .ui.dimmer {
   position: fixed;
 }
+.ui.modal > .close {
+  font-size: 2em;
+}
 .container {
   padding-top: 1rem;
 }
@@ -31,6 +34,9 @@
 .topMenu.menu {
   box-shadow: none !important;
 }
+.searchTitleWrapper {
+  display: initial;
+}
 .blogWriteForm .error.field .field {
   margin-bottom: 0;
 }
@@ -42,7 +48,6 @@
 }
 .headerWrapper {
   position: relative;
-  overflow: hidden;
 }
 .modal .scrolling.content {
   white-space: pre-line;
