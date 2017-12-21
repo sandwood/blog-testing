@@ -1,9 +1,8 @@
-// import { createSelector } from "reselect";
 import {
   POSTS_FETCHED,
   POST_CREATED,
   POST_DELETED,
-  POST_EDITED
+  POST_UPDATED
 } from "../types";
 
 export default function posts(state = {}, action = {}) {
@@ -11,7 +10,7 @@ export default function posts(state = {}, action = {}) {
     case POSTS_FETCHED:
       return action.data;
     case POST_DELETED:
-    case POST_EDITED:
+    case POST_UPDATED:
     case POST_CREATED:
     default:
       return state;

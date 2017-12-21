@@ -20,9 +20,6 @@ class ConfirmationPage extends React.Component {
         this.setState({ loading: false, success: this.state.confirmed })
       );
   }
-  checkConfirmed = () => {
-    this.setState({});
-  };
 
   render() {
     const { loading, success } = this.state;

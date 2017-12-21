@@ -1,8 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import axios from "axios";
 import { Dropdown } from "semantic-ui-react";
-import { fetchTitles, searchTitle } from "../../actions/titles";
 
 class SearchPostInput extends React.Component {
   state = {
@@ -12,29 +10,28 @@ class SearchPostInput extends React.Component {
     titles: {}
   };
 
-  onTitleSelect = title => {
-    console.log(title);
-    this.props.searchTitle(title.title).catch(err => console.log(err));
-  };
-
-  onSearchChange = () => {
+  onSearchChange = (e, data) => {
     clearTimeout(this.timer);
-    this.timer = setTimeout(this.fetchOptions, 100);
+    if (data.searchQuery.length === 0) {
+      this.timer = setTimeout(500);
+    } else {
+      this.timer = setTimeout(this.fetchOptions(data.searchQuery), 500);
+    }
   };
 
   onChange = (e, data) => {
-    this.onTitleSelect(this.state.titles[data.value]);
+    console.log(data.value);
   };
 
-  fetchOptions = () => {
+  fetchOptions = data => {
     this.setState({ loading: true });
-    this.props
-      .fetchTitles()
-      .then(res => res.titles)
-      .then(titles => {
+    axios
+      .post("/api/posts/searchPost", { data })
+      .then(res => res.data.post)
+      .then(res => {
         const options = [];
         const titlesHash = {};
-        titles.forEach(title => {
+        res.forEach(title => {
           titlesHash[title.title] = title;
           options.push({
             key: title._id,
@@ -42,7 +39,6 @@ class SearchPostInput extends React.Component {
             text: title.title
           });
         });
-        console.log('fetchTitles');
         this.setState({ loading: false, options, titles: titlesHash });
       });
   };
@@ -54,28 +50,15 @@ class SearchPostInput extends React.Component {
           search
           placeholder="검색"
           selection
+          onChange={this.onChange}
           onSearchChange={this.onSearchChange}
           options={this.state.options}
-          onChange={this.onChange}
           loading={this.state.loading}
-          noResultsMessage='결과가 없어요.'
+          noResultsMessage="결과가 없어요."
         />
       </div>
     );
   }
 }
 
-SearchPostInput.propTypes = {
-  fetchTitles: PropTypes.func.isRequired,
-  searchTitle: PropTypes.func.isRequired
-};
-
-function mapStateToProps(state) {
-  return {
-    titles: state.titles
-  };
-}
-
-export default connect(mapStateToProps, { fetchTitles, searchTitle })(
-  SearchPostInput
-);
+export default SearchPostInput;

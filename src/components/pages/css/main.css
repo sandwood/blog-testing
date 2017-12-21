@@ -49,6 +49,9 @@
 .headerWrapper {
   position: relative;
 }
+.modal .scrolling.content img{
+  margin: 0 auto;
+}
 .modal .scrolling.content {
   white-space: pre-line;
 }
@@ -82,6 +85,10 @@
 .ui.card img.ui.image {
   margin: 0 auto;
 }
+.seeMore{
+  margin-top: 2rem !important;
+}
+
 @media screen and (max-width: 480px) {
   .container_ {
     margin: 65px auto 0 auto;

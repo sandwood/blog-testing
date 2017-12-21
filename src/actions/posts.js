@@ -1,7 +1,7 @@
 import {
   POSTS_FETCHED,
   POST_CREATED,
-  POST_EDITED,
+  POST_UPDATED,
   POST_DELETED
 } from "../types";
 import api from "../api";
@@ -15,8 +15,8 @@ const postCreated = () => ({
   type: POST_CREATED
 });
 
-const postEdited = () => ({
-  type: POST_EDITED
+const postUpdated = () => ({
+  type: POST_UPDATED
 });
 
 const postDeleted = () => ({
@@ -29,8 +29,8 @@ export const fetchPosts = data => dispatch =>
 export const createPost = data => dispatch =>
   api.posts.create(data).then(post => dispatch(postCreated(post)));
 
-export const editPost = data => dispatch =>
-  api.posts.edit(data).then(post => dispatch(postEdited(post)));
+export const updatePost = data => dispatch =>
+  api.posts.update(data).then(post => dispatch(postUpdated(post)));
 
 export const deletePost = data => dispatch =>
   api.posts.delete(data).then(post => dispatch(postDeleted(post)));
